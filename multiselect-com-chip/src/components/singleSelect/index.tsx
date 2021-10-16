@@ -8,6 +8,7 @@ export const SingleSelect = () => {
   const [options, setOptions] = useState<JsonResponse[]>([])
   const [display, setDisplay] = useState(false)
   const [search, setSearch] = useState("")
+  const [bairros, setBairros] = useState<string[]>([])
   const wrapperRef = useRef(null)
 
   useEffect(() => {
@@ -44,28 +45,47 @@ export const SingleSelect = () => {
 
   const setValue = (valor: string) => {
     setSearch(valor)
+    debugger
+    const index = options.find((nome) =>
+      nome.nome.toLowerCase() === valor.toLowerCase()
+    )
+    console.log(index?.cidades)
+    setBairros(index?.cidades as string[])
     setDisplay(false)
   }
 
   return (
     <div ref={wrapperRef}>
-      <input id="auto" placeholder="Selecione a localidade: "
-        onClick={() => setDisplay(!display)}
-        onChange={handleOnChange}
-        value={search}
-      />
-      {display && (
-        <div>
-          {options.filter(({ nome }) => nome.toLowerCase().indexOf(search.toLowerCase()) > -1)
-            .map((value: JsonResponse, index) => {
-              return (
-                <div key={index} onClick={() => setValue(value.nome)} tabIndex={0}>
-                  <span>{value.nome}</span>
-                </div>
-              )
-            })}
-        </div>
-      )}
+      <div>
+        <input id="auto" placeholder="Selecione a localidade: "
+          onClick={() => setDisplay(!display)}
+          onChange={handleOnChange}
+          value={search}
+        />
+        {display && (
+          <div>
+            {options.filter(({ nome }) => nome.toLowerCase().indexOf(search.toLowerCase()) > -1)
+              .map((value: JsonResponse, index) => {
+                return (
+                  <div key={index} onClick={() => setValue(value.nome)} tabIndex={0}>
+                    <span>{value.nome}</span>
+                  </div>
+                )
+              })}
+          </div>
+        )}
+      </div>
+      <div>
+        <select id="cidade" placeholder="Selecione o bairro: "
+          value={search}
+        >
+          {bairros.map((bairro, index) => {
+            return (
+              <option key={index}>{bairro}</option>
+            )
+          })}
+        </select>
+      </div>
     </div>
   )
 }
